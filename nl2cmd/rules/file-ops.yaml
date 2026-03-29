@@ -1,0 +1,109 @@
+- intent: find_large_files
+  patterns:
+    - "find (large|big|huge) files (over|above|larger than|bigger than) {size}"
+    - "files bigger than {size}"
+    - "large files (over|above) {size}"
+    - "find files larger than {size}"
+  slots:
+    size: { type: filesize, default: "100M" }
+  command: "find . -size +{size}"
+  tags: [file, search, disk]
+
+- intent: find_files_by_extension
+  patterns:
+    - "find (all )?{ext} files"
+    - "search for {ext} files"
+    - "list (all )?{ext} files"
+  slots:
+    ext: { type: string }
+  command: 'find . -name "*.{ext}"'
+  tags: [file, search]
+
+- intent: find_files_modified_today
+  patterns:
+    - "find (all )?(files )?(modified|changed) today"
+    - "files (modified|changed) today"
+    - "today's (modified|changed) files"
+  command: "find . -mtime 0"
+  tags: [file, search]
+
+- intent: find_files_modified_days
+  patterns:
+    - "find files (modified|changed) (in the last|within) {duration}"
+    - "files (modified|changed) (in the last|within) {duration}"
+    - "recently (modified|changed) files (last|within) {duration}"
+  slots:
+    duration: { type: duration, default: "7" }
+  command: "find . -mtime -{duration}"
+  tags: [file, search]
+
+- intent: find_empty_files
+  patterns:
+    - "find empty files"
+    - "list empty files"
+    - "empty files in (current )?directory"
+  command: "find . -empty -type f"
+  tags: [file, search]
+
+- intent: find_empty_directories
+  patterns:
+    - "find empty (directories|dirs|folders)"
+    - "list empty (directories|dirs|folders)"
+    - "empty (directories|dirs|folders)"
+  command: "find . -empty -type d"
+  tags: [file, search]
+
+- intent: count_files
+  patterns:
+    - "count files (in|inside) (current )?(directory|dir|folder)"
+    - "how many files (are )?(in|inside)? (here|current (directory|dir|folder))"
+    - "number of files"
+  command: "find . -type f | wc -l"
+  tags: [file, count]
+
+- intent: file_permissions
+  patterns:
+    - "show (file )?permissions (for|of) {path}"
+    - "permissions (of|for) {path}"
+    - "list permissions {path}"
+  slots:
+    path: { type: path, default: "." }
+  command: "ls -la {path}"
+  tags: [file, permissions]
+
+- intent: make_executable
+  patterns:
+    - "make {filename} executable"
+    - "add execute permission (to )?{filename}"
+    - "chmod (\\+x )?{filename}"
+  slots:
+    filename: { type: filename }
+  command: "chmod +x {filename}"
+  tags: [file, permissions]
+
+- intent: create_directory
+  patterns:
+    - "(create|make) (a )?(directory|dir|folder) (named|called) {path}"
+    - "mkdir {path}"
+  slots:
+    path: { type: path }
+  command: "mkdir -p {path}"
+  tags: [file, create]
+
+- intent: copy_file
+  patterns:
+    - "copy {filename} to {path}"
+    - "cp {filename} (to )?{path}"
+  slots:
+    filename: { type: filename }
+    path: { type: path }
+  command: "cp {filename} {path}"
+  tags: [file, copy]
+
+- intent: find_duplicate_files
+  patterns:
+    - "find duplicate files"
+    - "find (file )?duplicates"
+    - "duplicate files"
+  command: "find . -type f -exec md5sum {} + | sort | uniq -d -w 32"
+  tags: [file, search, disk]

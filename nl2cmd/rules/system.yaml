@@ -1,0 +1,83 @@
+- intent: disk_usage_sorted
+  patterns:
+    - "disk usage (sorted )?by size"
+    - "folder sizes (sorted)?"
+    - "directory sizes"
+    - "disk usage by (folder|directory)"
+    - "biggest (folders|directories)"
+  command: "du -sh */ | sort -rh"
+  tags: [system, disk]
+
+- intent: disk_free
+  patterns:
+    - "disk (free )?space"
+    - "(free|available) disk space"
+    - "how much (disk )?space (is )?(left|free|available)"
+    - "df"
+  command: "df -h"
+  tags: [system, disk]
+
+- intent: memory_usage
+  patterns:
+    - "(show )?(memory|ram) usage"
+    - "free memory"
+    - "how much (memory|ram) (is )?(free|available|used)"
+    - "memory (info|information|status)"
+  command: "free -h"
+  tags: [system, memory]
+
+- intent: cpu_info
+  patterns:
+    - "(show )?(cpu|processor) (info|information)"
+    - "what (cpu|processor) (do I have|is this)"
+    - "cpu details"
+    - "how many (cpu )?cores"
+  command: "lscpu"
+  tags: [system, cpu]
+
+- intent: system_info
+  patterns:
+    - "(show )?system (info|information)"
+    - "(about|describe) (this )?(system|machine|computer)"
+    - "uname"
+  command: "uname -a"
+  tags: [system, info]
+
+- intent: os_version
+  patterns:
+    - "(show )?(os|operating system) version"
+    - "what (os|linux|distro|distribution) (am I running|is this)"
+    - "linux version"
+  command: "cat /etc/os-release"
+  tags: [system, info]
+
+- intent: kernel_version
+  patterns:
+    - "(show )?kernel version"
+    - "what kernel (am I running|version)"
+  command: "uname -r"
+  tags: [system, info]
+
+- intent: environment_variables
+  patterns:
+    - "(show|list|print) (all )?environment variables"
+    - "env (vars|variables)"
+    - "printenv"
+  command: "printenv"
+  tags: [system, env]
+
+- intent: current_date
+  patterns:
+    - "(show )?(current )?(date|time)( and time)?"
+    - "what (time|date) is it"
+    - "today's date"
+  command: "date"
+  tags: [system, date]
+
+- intent: mounted_filesystems
+  patterns:
+    - "(show|list) mounted (filesystems|drives|disks|partitions)"
+    - "mounted (filesystems|drives|partitions)"
+    - "mount points"
+  command: "lsblk -f"
+  tags: [system, disk]

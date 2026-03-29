@@ -1,0 +1,88 @@
+- intent: show_open_ports
+  patterns:
+    - "show (open|listening) ports"
+    - "list (open|listening) ports"
+    - "(open|listening) ports"
+    - "what ports are (open|listening)"
+  command: "ss -tulnp"
+  tags: [network, ports]
+
+- intent: check_port
+  patterns:
+    - "(check|is) port {port} (open|in use|used|listening)"
+    - "what('s| is) (running|listening) on port {port}"
+    - "who is using port {port}"
+  slots:
+    port: { type: port }
+  command: "ss -tulnp | grep :{port}"
+  tags: [network, ports]
+
+- intent: show_ip_address
+  patterns:
+    - "show (my )?(ip|IP) address"
+    - "(my |what('s| is) (my )?)ip address"
+    - "what is my ip"
+  command: "ip -brief addr show"
+  tags: [network, ip]
+
+- intent: show_public_ip
+  patterns:
+    - "show (my )?public (ip|IP)( address)?"
+    - "(my |what('s| is) (my )?)public ip"
+    - "external ip( address)?"
+  command: "curl -s ifconfig.me"
+  tags: [network, ip]
+
+- intent: ping_host
+  patterns:
+    - "ping {host}"
+    - "check (if )?{host} (is )?(up|reachable|alive)"
+  slots:
+    host: { type: string }
+  command: "ping -c 4 {host}"
+  tags: [network, diagnostic]
+
+- intent: dns_lookup
+  patterns:
+    - "dns lookup (for )?{host}"
+    - "resolve {host}"
+    - "nslookup {host}"
+  slots:
+    host: { type: string }
+  command: "dig {host}"
+  tags: [network, dns]
+
+- intent: show_network_connections
+  patterns:
+    - "show (active |current )?network connections"
+    - "(active |current )?connections"
+    - "list (active |current )?connections"
+  command: "ss -tunap"
+  tags: [network, connections]
+
+- intent: show_routing_table
+  patterns:
+    - "show routing table"
+    - "show routes"
+    - "routing table"
+    - "ip routes"
+  command: "ip route show"
+  tags: [network, routing]
+
+- intent: download_file
+  patterns:
+    - "download {url}"
+    - "wget {url}"
+    - "fetch {url}"
+  slots:
+    url: { type: string }
+  command: "curl -LO {url}"
+  tags: [network, download]
+
+- intent: check_bandwidth
+  patterns:
+    - "(show|check) (network )?bandwidth"
+    - "network (speed|throughput)"
+    - "monitor (network )?traffic"
+  command: "iftop -t -s 5 2>/dev/null || nethogs 2>/dev/null || echo 'Install iftop or nethogs: sudo apt install iftop'"
+  tags: [network, monitoring]

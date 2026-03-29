@@ -1,0 +1,60 @@
+- intent: compress_tar_gz
+  patterns:
+    - "(compress|archive|tar) {path} (to|as|into)? (tar\\.gz|tarball)?"
+    - "create (a )?tarball (of|from) {path}"
+    - "tar (and )?(gz|gzip) {path}"
+  slots:
+    path: { type: path }
+  command: "tar -czf {path}.tar.gz {path}"
+  tags: [archive, compress]
+
+- intent: extract_tar_gz
+  patterns:
+    - "extract {filename}"
+    - "untar {filename}"
+    - "uncompress {filename}"
+    - "unzip {filename}"
+    - "decompress {filename}"
+  slots:
+    filename: { type: filename }
+  command: "tar -xzf {filename}"
+  tags: [archive, extract]
+
+- intent: list_archive
+  patterns:
+    - "list (contents|files) (of|in) {filename}"
+    - "what('s| is) (in|inside) {filename}"
+    - "show (contents|files) (of|in) {filename}"
+  slots:
+    filename: { type: filename }
+  command: "tar -tzf {filename}"
+  tags: [archive, list]
+
+- intent: compress_gzip
+  patterns:
+    - "gzip {filename}"
+    - "compress {filename} (with )?gzip"
+  slots:
+    filename: { type: filename }
+  command: "gzip {filename}"
+  tags: [archive, compress]
+
+- intent: create_zip
+  patterns:
+    - "(create|make) (a )?zip (of|from) {path}"
+    - "zip {path}"
+    - "zip (up )?{path}"
+  slots:
+    path: { type: path }
+  command: "zip -r {path}.zip {path}"
+  tags: [archive, compress]
+
+- intent: compress_old_logs
+  patterns:
+    - "compress (log files|logs) older than {duration}"
+    - "gzip old logs( older than {duration})?"
+    - "compress old log files"
+  slots:
+    duration: { type: duration, default: "7" }
+  command: 'find /var/log -name "*.log" -mtime +{duration} -exec gzip {{}} \;'
+  tags: [archive, logs, system]

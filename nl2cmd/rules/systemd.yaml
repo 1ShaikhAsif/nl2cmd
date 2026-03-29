@@ -1,0 +1,86 @@
+- intent: service_status
+  patterns:
+    - "(show )?(status|state) (of )?{name} (service)?"
+    - "(is )?{name} (service )?(running|active|up)"
+    - "systemctl status {name}"
+    - "{name} service status"
+  slots:
+    name: { type: string }
+  command: "systemctl status {name}"
+  tags: [systemd, service]
+
+- intent: start_service
+  patterns:
+    - "start {name} (service)?"
+    - "systemctl start {name}"
+    - "bring up {name}"
+  slots:
+    name: { type: string }
+  command: "sudo systemctl start {name}"
+  tags: [systemd, service]
+
+- intent: stop_service
+  patterns:
+    - "stop {name} (service)?"
+    - "systemctl stop {name}"
+    - "bring down {name}"
+  slots:
+    name: { type: string }
+  command: "sudo systemctl stop {name}"
+  tags: [systemd, service]
+
+- intent: restart_service
+  patterns:
+    - "restart {name} (service)?"
+    - "systemctl restart {name}"
+  slots:
+    name: { type: string }
+  command: "sudo systemctl restart {name}"
+  tags: [systemd, service]
+
+- intent: enable_service
+  patterns:
+    - "enable {name} (service)?(on boot| at startup)?"
+    - "auto(start| start) {name} (on boot|at startup)?"
+    - "systemctl enable {name}"
+  slots:
+    name: { type: string }
+  command: "sudo systemctl enable {name}"
+  tags: [systemd, service]
+
+- intent: disable_service
+  patterns:
+    - "disable {name} (service)?"
+    - "prevent {name} (from )?(starting|autostart)"
+    - "systemctl disable {name}"
+  slots:
+    name: { type: string }
+  command: "sudo systemctl disable {name}"
+  tags: [systemd, service]
+
+- intent: list_services
+  patterns:
+    - "list (all )?(running )?services"
+    - "show (all )?(running )?services"
+    - "(running |active )?services"
+  command: "systemctl list-units --type=service --state=running"
+  tags: [systemd, service]
+
+- intent: list_failed_services
+  patterns:
+    - "list failed services"
+    - "show failed (services|units)"
+    - "failed services"
+    - "what services failed"
+  command: "systemctl list-units --failed"
+  tags: [systemd, service]
+
+- intent: service_logs
+  patterns:
+    - "(show )?logs (for|of) {name} (service)?"
+    - "{name} (service )?logs"
+    - "journalctl {name}"
+  slots:
+    name: { type: string }
+  command: "journalctl -u {name} --no-pager -n 50"
+  tags: [systemd, logs]

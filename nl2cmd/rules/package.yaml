@@ -1,0 +1,66 @@
+- intent: install_package
+  patterns:
+    - "install {package}"
+    - "apt install {package}"
+    - "add (package )?{package}"
+    - "get {package}"
+  slots:
+    package: { type: package }
+  command: "sudo apt install -y {package}"
+  tags: [package, install]
+
+- intent: remove_package
+  patterns:
+    - "(remove|uninstall) {package}"
+    - "apt remove {package}"
+    - "delete (package )?{package}"
+  slots:
+    package: { type: package }
+  command: "sudo apt remove {package}"
+  tags: [package, remove]
+
+- intent: update_packages
+  patterns:
+    - "update (package )?(list|index|cache)"
+    - "apt update"
+    - "refresh (package )?(list|index)"
+  command: "sudo apt update"
+  tags: [package, update]
+
+- intent: upgrade_packages
+  patterns:
+    - "upgrade (all )?(packages|system)"
+    - "apt upgrade"
+    - "update (and upgrade )?(all )?(packages|system|everything)"
+  command: "sudo apt update && sudo apt upgrade -y"
+  tags: [package, upgrade]
+
+- intent: search_package
+  patterns:
+    - "search (for )?(package )?{package}"
+    - "find (package )?{package}"
+    - "is {package} available"
+    - "apt search {package}"
+  slots:
+    package: { type: package }
+  command: "apt search {package}"
+  tags: [package, search]
+
+- intent: list_installed
+  patterns:
+    - "list installed (packages)?"
+    - "installed packages"
+    - "what('s| is) installed"
+    - "show installed (packages)?"
+  command: "dpkg -l"
+  tags: [package, list]
+
+- intent: package_info
+  patterns:
+    - "(show )?(package )?info (for|about|on) {package}"
+    - "{package} (package )?info"
+    - "details (about|for|on) {package}"
+  slots:
+    package: { type: package }
+  command: "apt show {package}"
+  tags: [package, info]

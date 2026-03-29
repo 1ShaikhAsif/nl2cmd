@@ -1,0 +1,91 @@
+- intent: docker_stop_all
+  patterns:
+    - "stop all (docker )?containers"
+    - "docker stop all"
+    - "kill all (docker )?containers"
+  command: "docker stop $(docker ps -q)"
+  tags: [docker, containers]
+
+- intent: docker_list_containers
+  patterns:
+    - "list (all )?(docker |running )?containers"
+    - "(show|docker) (running )?containers"
+    - "docker ps"
+  command: "docker ps -a"
+  tags: [docker, containers]
+
+- intent: docker_list_images
+  patterns:
+    - "list (all )?(docker )?images"
+    - "(show|docker) images"
+  command: "docker images"
+  tags: [docker, images]
+
+- intent: docker_remove_stopped
+  patterns:
+    - "remove (all )?stopped (docker )?containers"
+    - "clean (up )?(docker )?containers"
+    - "docker prune containers"
+  command: "docker container prune -f"
+  tags: [docker, cleanup]
+
+- intent: docker_remove_dangling
+  patterns:
+    - "remove (all )?dangling (docker )?images"
+    - "clean (up )?(docker )?images"
+    - "docker (image )?prune"
+  command: "docker image prune -f"
+  tags: [docker, cleanup]
+
+- intent: docker_system_prune
+  patterns:
+    - "docker (system )?cleanup"
+    - "clean (up )?docker (system|everything)"
+    - "docker system prune"
+    - "free (up )?docker (disk )?space"
+  command: "docker system prune -f"
+  tags: [docker, cleanup]
+
+- intent: docker_logs
+  patterns:
+    - "(show )?(docker )?logs (for|of) {name}"
+    - "docker logs {name}"
+    - "container logs (for )?{name}"
+  slots:
+    name: { type: string }
+  command: "docker logs --tail 100 {name}"
+  tags: [docker, logs]
+
+- intent: docker_exec_shell
+  patterns:
+    - "(exec|shell|bash) into (container )?{name}"
+    - "open (a )?shell (in|inside) (container )?{name}"
+    - "docker exec {name}"
+  slots:
+    name: { type: string }
+  command: "docker exec -it {name} /bin/bash"
+  tags: [docker, exec]
+
+- intent: docker_compose_up
+  patterns:
+    - "docker compose up"
+    - "start docker compose"
+    - "(start|run) (all )?compose services"
+  command: "docker compose up -d"
+  tags: [docker, compose]
+
+- intent: docker_compose_down
+  patterns:
+    - "docker compose down"
+    - "stop docker compose"
+    - "stop (all )?compose services"
+  command: "docker compose down"
+  tags: [docker, compose]
+
+- intent: docker_stats
+  patterns:
+    - "docker (container )?stats"
+    - "container (resource )?usage"
+    - "docker (resource )?usage"
+  command: "docker stats --no-stream"
+  tags: [docker, monitoring]

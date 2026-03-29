@@ -1,0 +1,113 @@
+- intent: count_lines
+  patterns:
+    - "count lines (in|of) {filename}"
+    - "(how many|number of) lines (in|of) {filename}"
+    - "line count (of|for|in) {filename}"
+    - "wc (lines )?{filename}"
+  slots:
+    filename: { type: filename }
+  command: "wc -l {filename}"
+  tags: [text, count]
+
+- intent: search_text_in_file
+  patterns:
+    - "(search|find|look) for {pattern} in {filename}"
+    - "grep {pattern} (in )?{filename}"
+    - "find {pattern} in file {filename}"
+  slots:
+    pattern: { type: string }
+    filename: { type: filename }
+  command: 'grep -n "{pattern}" {filename}'
+  tags: [text, search]
+
+- intent: search_text_recursive
+  patterns:
+    - "(search|find|grep) (for )?{pattern} (in all files|recursively)"
+    - "recursive (search|grep) (for )?{pattern}"
+    - "grep -r {pattern}"
+  slots:
+    pattern: { type: string }
+  command: 'grep -rn "{pattern}" .'
+  tags: [text, search]
+
+- intent: replace_text
+  patterns:
+    - "replace {old} with {new} in {filename}"
+    - "substitute {old} (with|for) {new} in {filename}"
+    - "change {old} to {new} in {filename}"
+  slots:
+    old: { type: string }
+    new: { type: string }
+    filename: { type: filename }
+  command: "sed -i 's/{old}/{new}/g' {filename}"
+  tags: [text, replace]
+
+- intent: sort_file
+  patterns:
+    - "sort {filename}"
+    - "sort (the )?contents (of )?{filename}"
+    - "sort lines (in|of) {filename}"
+  slots:
+    filename: { type: filename }
+  command: "sort {filename}"
+  tags: [text, sort]
+
+- intent: unique_lines
+  patterns:
+    - "(unique|distinct|deduplicate) lines (in|of) {filename}"
+    - "remove (duplicate|dup) lines (from|in) {filename}"
+  slots:
+    filename: { type: filename }
+  command: "sort {filename} | uniq"
+  tags: [text, unique]
+
+- intent: head_file
+  patterns:
+    - "(show )?(first|top) {n} lines (of|in|from) {filename}"
+    - "head (-n )?{n} {filename}"
+    - "beginning of {filename}"
+  slots:
+    n: { type: number, default: "10" }
+    filename: { type: filename }
+  command: "head -n {n} {filename}"
+  tags: [text, view]
+
+- intent: tail_file
+  patterns:
+    - "(show )?(last|bottom) {n} lines (of|in|from) {filename}"
+    - "tail (-n )?{n} {filename}"
+    - "end of {filename}"
+  slots:
+    n: { type: number, default: "10" }
+    filename: { type: filename }
+  command: "tail -n {n} {filename}"
+  tags: [text, view]
+
+- intent: tail_follow
+  patterns:
+    - "(follow|watch|stream|monitor) {filename}"
+    - "tail -f {filename}"
+    - "live (view|output|log) (of )?{filename}"
+  slots:
+    filename: { type: filename }
+  command: "tail -f {filename}"
+  tags: [text, view, monitoring]
+
+- intent: word_count
+  patterns:
+    - "(count|number of) words (in|of) {filename}"
+    - "word count (of|for|in) {filename}"
+  slots:
+    filename: { type: filename }
+  command: "wc -w {filename}"
+  tags: [text, count]
+
+- intent: column_extract
+  patterns:
+    - "(extract|get|print|show) column {n} (from|of|in) {filename}"
+    - "cut column {n} (from|of|in) {filename}"
+  slots:
+    n: { type: number }
+    filename: { type: filename }
+  command: "awk '{{print ${n}}}' {filename}"
+  tags: [text, extract]

@@ -1,0 +1,51 @@
+- intent: list_users
+  patterns:
+    - "list (all )?users"
+    - "show (all )?users"
+    - "who (are the|all) users"
+    - "user list"
+  command: "cut -d: -f1 /etc/passwd"
+  tags: [user, list]
+
+- intent: current_user
+  patterns:
+    - "who am i"
+    - "current user"
+    - "whoami"
+    - "what user am i"
+  command: "whoami"
+  tags: [user, info]
+
+- intent: logged_in_users
+  patterns:
+    - "who is logged in"
+    - "logged in users"
+    - "show logged in users"
+    - "active users"
+  command: "who"
+  tags: [user, info]
+
+- intent: user_groups
+  patterns:
+    - "(show |list )?(my |current )?groups"
+    - "what groups am i in"
+    - "user groups"
+  command: "groups"
+  tags: [user, groups]
+
+- intent: last_logins
+  patterns:
+    - "(show )?last logins"
+    - "recent logins"
+    - "login history"
+    - "who logged in recently"
+  command: "last -20"
+  tags: [user, security]
+
+- intent: failed_logins
+  patterns:
+    - "(show )?failed logins"
+    - "failed login attempts"
+    - "bad logins"
+  command: "sudo lastb -20"
+  tags: [user, security]

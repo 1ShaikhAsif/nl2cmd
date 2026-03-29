@@ -1,0 +1,71 @@
+- intent: list_processes
+  patterns:
+    - "list (all )?(running )?processes"
+    - "show (all )?(running )?processes"
+    - "(running )?processes"
+    - "ps (aux|all)"
+  command: "ps aux"
+  tags: [process, list]
+
+- intent: find_process
+  patterns:
+    - "find process (named|called|for|matching) {name}"
+    - "search (for )?process {name}"
+    - "is {name} running"
+    - "check (if )?{name} (is )?running"
+  slots:
+    name: { type: string }
+  command: "ps aux | grep {name}"
+  tags: [process, search]
+
+- intent: kill_process_by_name
+  patterns:
+    - "kill (process )?(named |called )?{name}"
+    - "stop (process )?(named |called )?{name}"
+    - "terminate {name}"
+  slots:
+    name: { type: string }
+  command: "pkill {name}"
+  tags: [process, kill]
+
+- intent: kill_process_on_port
+  patterns:
+    - "kill (process )?on port {port}"
+    - "stop (process )?on port {port}"
+    - "free (up )?port {port}"
+  slots:
+    port: { type: port }
+  command: "fuser -k {port}/tcp"
+  tags: [process, kill, network]
+
+- intent: top_processes
+  patterns:
+    - "top processes"
+    - "processes (using|by) (most )?(cpu|memory|ram)"
+    - "most (cpu|memory|ram) (intensive|hungry) processes"
+    - "what('s| is) using (the most )?(cpu|memory|ram)"
+  command: "ps aux --sort=-%mem | head -20"
+  tags: [process, monitoring]
+
+- intent: process_tree
+  patterns:
+    - "process tree"
+    - "show process tree"
+    - "pstree"
+  command: "pstree -p"
+  tags: [process, tree]
+
+- intent: background_jobs
+  patterns:
+    - "(show|list) (background )?jobs"
+    - "background (processes|jobs)"
+    - "running jobs"
+  command: "jobs -l"
+  tags: [process, jobs]
+
+- intent: system_uptime
+  patterns:
+    - "(show )?(system )?uptime"
+    - "how long has (the )?(system|server|machine) been (up|running)"
+  command: "uptime"
+  tags: [process, system]
